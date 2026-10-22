@@ -1,0 +1,32 @@
+<%- include("partials/header", { title }) %>
+<section class="page-heading manager-heading"><div class="eyebrow"><span class="pulse"></span> RESTRICTED / ADMINISTRATOR SESSION</div><h1>CONTROL <span class="accent">ROOM</span></h1><p>Issue keys, define limits, and revoke access. This dashboard is not linked from the public homepage.</p>
+<form method="post" action="/manager/logout" class="logout-form"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="button ghost" type="submit">Sign out</button></form></section>
+<% if (newKey) { %>
+<section class="panel new-key-panel"><div class="panel-title"><span>NEW KEY / COPY NOW</span><span class="tag">SHOWN ONCE</span></div><p>This secret will not be shown again. Copy it and deliver it privately.</p><code id="new-key-value" class="new-key-value"><%= newKey %></code><button class="button primary" type="button" id="copy-new-key">Copy key</button></section>
+<% } %>
+<section class="stats-grid">
+  <article class="stat-card"><span>REQUESTS / 24H</span><strong><%= usage24h %></strong><small>Recorded gateway activity</small></article>
+  <article class="stat-card"><span>KEY RECORDS</span><strong><%= keys.length %></strong><small>Latest 100 key records</small></article>
+  <article class="stat-card"><span>ACCESS POLICY</span><strong class="green">ACTIVE</strong><small>Server-side validation</small></article>
+</section>
+<section class="panel"><div class="panel-title"><span>01 / ISSUE API KEY</span><span class="tag">NEW CREDENTIAL</span></div>
+<form method="post" action="/manager/keys" class="key-create-form">
+<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+<div><label for="label">User label</label><input id="label" name="label" required maxlength="80" placeholder="Customer / project"></div>
+<div><label for="quota">Total requests</label><input id="quota" name="quota" type="number" required min="1" max="10000000" value="1000"></div>
+<div><label for="rate">Requests/min</label><input id="rate" name="rate" type="number" required min="1" max="10000" value="10"></div>
+<div><label for="expiresDays">Validity (days)</label><input id="expiresDays" name="expiresDays" type="number" required min="1" max="3650" value="30"></div>
+<button class="button primary" type="submit">Generate key +</button>
+</form></section>
+<section class="panel"><div class="panel-title"><span>02 / KEY INVENTORY</span><span class="tag"><%= keys.length %> SHOWN</span></div>
+<div class="table-wrap"><table><thead><tr><th>LABEL / PREFIX</th><th>USAGE</th><th>RATE</th><th>EXPIRES</th><th>STATE</th><th>ACTION</th></tr></thead><tbody>
+<% keys.forEach(function(k) { const expired = new Date(k.expires_at).getTime() <= Date.now(); %>
+<tr><td><strong><%= k.label %></strong><small><%= k.key_prefix %>…</small></td><td><%= k.used_total %> / <%= k.quota_total %></td><td><%= k.rate_per_minute %>/min</td><td><%= new Date(k.expires_at).toLocaleDateString() %></td><td><span class="state <%= k.active && !expired ? 'state-active' : 'state-off' %>"><%= k.active && !expired ? 'ACTIVE' : 'INACTIVE' %></span></td><td><% if (k.active && !expired) { %><form method="post" action="/manager/keys/<%= k.id %>/revoke" onsubmit="return confirm('Revoke this key immediately?')"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="text-button danger" type="submit">Revoke</button></form><% } else { %><span class="muted">—</span><% } %></td></tr>
+<% }) %>
+<% if (!keys.length) { %><tr><td colspan="6" class="empty-state">No keys issued yet. Generate the first key above.</td></tr><% } %>
+</tbody></table></div></section>
+<section class="panel"><div class="panel-title"><span>03 / RECENT REQUEST EVENTS</span><span class="tag">LATEST 20</span></div><div class="table-wrap"><table><thead><tr><th>TIME</th><th>KEY ID</th><th>RESULT</th><th>STATUS</th><th>LATENCY</th></tr></thead><tbody>
+<% recent.forEach(function(r) { %><tr><td><%= new Date(r.created_at).toLocaleString() %></td><td><%= r.api_key_id || "unknown" %></td><td><%= r.outcome %></td><td><%= r.status_code %></td><td><%= r.latency_ms %> ms</td></tr><% }) %>
+<% if (!recent.length) { %><tr><td colspan="5" class="empty-state">No request events recorded.</td></tr><% } %>
+</tbody></table></div></section>
+<%- include("partials/footer") %>

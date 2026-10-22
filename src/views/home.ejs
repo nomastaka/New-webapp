@@ -1,0 +1,24 @@
+<%- include("partials/header", { title }) %>
+<section class="hero">
+  <div class="eyebrow"><span class="pulse"></span> SECURE REQUEST INFRASTRUCTURE</div>
+  <h1>CONTROL THE<br><span class="accent">REQUEST.</span></h1>
+  <p class="lead">A focused API gateway with scoped access keys, usage limits, and transparent request handling.</p>
+  <div class="hero-actions"><a class="button primary" href="/playground">Open API terminal <span aria-hidden="true">↗</span></a><a class="button ghost" href="#features">Inspect capabilities</a></div>
+  <div class="terminal-card">
+    <div class="terminal-head"><div class="window-dots"><i></i><i></i><i></i></div><span>gateway_status.log</span><span class="terminal-live">LIVE</span></div>
+    <div class="terminal-body">
+      <p><span class="muted">[00:00:01]</span> initializing secure gateway...</p>
+      <p><span class="green">[OK]</span> access policy loaded</p>
+      <p><span class="green">[OK]</span> request quota engine ready</p>
+      <p><span class="green">[OK]</span> upstream destination locked</p>
+      <p><span class="cyan">[READY]</span> waiting for authenticated request<span class="cursor">_</span></p>
+    </div>
+  </div>
+</section>
+<section id="features" class="feature-grid">
+  <article class="feature"><div class="feature-icon">⌘</div><h2>Scoped keys</h2><p>Individually issued credentials with expiration, quotas, and instant revocation.</p></article>
+  <article class="feature"><div class="feature-icon">⛨</div><h2>Server-side checks</h2><p>Requests are authenticated and validated before reaching the upstream service.</p></article>
+  <article class="feature"><div class="feature-icon">▤</div><h2>Clear responses</h2><p>Inspect response status, timing, and formatted output in a browser interface.</p></article>
+</section>
+<section class="notice"><span class="notice-mark">i</span><p>API access requires an active key issued by an administrator. Never share a key publicly or put it in a URL.</p></section>
+<%- include("partials/footer") %>
