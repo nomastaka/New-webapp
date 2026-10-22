@@ -1,0 +1,26 @@
+<%- include("partials/header", { title }) %>
+<section class="page-heading"><div class="eyebrow">REQUEST CONSOLE / V1</div><h1>API <span class="accent">TERMINAL</span></h1><p>Send a validated request to the configured upstream. Your key is sent in an Authorization header, not the URL.</p></section>
+<section class="playground-layout">
+  <form id="api-form" class="panel request-panel">
+    <div class="panel-title"><span>01 / REQUEST CONFIGURATION</span><span class="tag">GET</span></div>
+    <label for="api-key">API access key</label>
+    <input id="api-key" name="apiKey" type="password" autocomplete="off" required maxlength="200" placeholder="sk_live_••••••••••••" spellcheck="false">
+    <p class="field-note">Key is used for this request only. Do not paste it into a URL or share it.</p>
+    <div class="field-row">
+      <div><label for="query-id">ID</label><input id="query-id" name="id" maxlength="500" placeholder="123"></div>
+      <div><label for="query-type">TYPE</label><input id="query-type" name="type" maxlength="100" placeholder="example"></div>
+      <div><label for="query-page">PAGE</label><input id="query-page" name="page" inputmode="numeric" pattern="[0-9]{1,6}" maxlength="6" placeholder="1"></div>
+    </div>
+    <button class="button primary full" type="submit">Execute request <span aria-hidden="true">→</span></button>
+    <p class="field-note">Only parameters approved by the server are accepted. The destination URL cannot be changed here.</p>
+  </form>
+  <section class="panel response-panel" aria-live="polite">
+    <div class="panel-title"><span>02 / RESPONSE</span><span id="response-status" class="tag neutral">WAITING</span></div>
+    <div class="response-meta"><span id="response-time">— ms</span><button id="copy-response" class="text-button" type="button" disabled>Copy response</button></div>
+    <pre id="response-output" class="response-output">{
+  "status": "waiting",
+  "message": "Configure a request to begin."
+}</pre>
+  </section>
+</section>
+<%- include("partials/footer") %>

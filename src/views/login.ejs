@@ -1,0 +1,16 @@
+<%- include("partials/header", { title }) %>
+<section class="auth-wrap">
+  <div class="eyebrow">RESTRICTED AREA / AUTHENTICATION REQUIRED</div>
+  <div class="panel auth-panel">
+    <div class="lock-symbol">⌑</div><h1>MANAGER <span class="accent">ACCESS</span></h1>
+    <p class="muted">Authorized administrators only. All access attempts may be logged.</p>
+    <% if (error) { %><div class="alert"><%= error %></div><% } %>
+    <form method="post" action="/manager/login">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <label for="username">Administrator ID</label><input id="username" name="username" required maxlength="100" autocomplete="username">
+      <label for="password">Passphrase</label><input id="password" name="password" type="password" required maxlength="200" autocomplete="current-password">
+      <button class="button primary full" type="submit">Authenticate <span aria-hidden="true">→</span></button>
+    </form>
+  </div>
+</section>
+<%- include("partials/footer") %>
