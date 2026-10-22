@@ -30,7 +30,6 @@ function verifyCsrf(req, res, next) {
   const referer = req.get("Referer");
   const host = req.get("host") || "";
 
-  // Validate the Origin header when provided.
   if (origin) {
     let requestOrigin;
 
@@ -49,7 +48,6 @@ function verifyCsrf(req, res, next) {
       return res.status(403).send("Forbidden");
     }
   } else if (referer) {
-    // If Origin is absent, validate Referer instead.
     let refererOrigin;
 
     try {
@@ -67,11 +65,9 @@ function verifyCsrf(req, res, next) {
       return res.status(403).send("Forbidden");
     }
   } else if (process.env.NODE_ENV === "production") {
-    // Require Origin or Referer for production POST requests.
     return res.status(403).send("Forbidden");
   }
 
-  // Validate the session-bound CSRF token.
   const token = req.body && req.body._csrf;
   const sessionToken = req.session && req.session.csrfToken;
 
@@ -86,7 +82,16 @@ function verifyCsrf(req, res, next) {
   next();
 }
 
+function requireAdmin(req, res, next) {
+  if (!req.session || !req.session.adminId) {
+    return res.redirect("/manager/login");
+  }
+
+  next();
+}
+
 module.exports = {
   attachCsrf,
   verifyCsrf,
+  requireAdmin,
 };
