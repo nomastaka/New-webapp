@@ -120,7 +120,7 @@ function createApp() {
     });
   });
 
-  app.post("/manager/keys", requireAdmin, verifyCsrf, async (req, res, next) => {
+  app.post("/manager/keys", requireAdmin, async (req, res, next) => {
     try {
       const schema = z.object({
         label: z.string().trim().min(1).max(80),
