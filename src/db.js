@@ -16,14 +16,29 @@ if (!databaseUrl) {
 // Keep certificate verification enabled in production.
 // If a private CA is required, provide its trusted PEM file using
 // DATABASE_SSL_CA_FILE. Never disable rejectUnauthorized in production.
+
 function createSslConfig() {
   if (!isProduction) {
     return undefined;
   }
 
-  const ssl = {
-    rejectUnauthorized: true
-  };
+  const sslMode = (
+    process.env.DATABASE_SSL_MODE || "verify"
+  ).trim().toLowerCase();
+
+  // For Render's internal PostgreSQL URL only:
+  // keep TLS encryption, but allow its self-signed certificate.
+  if (sslMode === "require") {
+    return { rejectUnauthorized: false };
+  }
+
+  if (sslMode !== "verify") {
+    throw new Error(
+      'DATABASE_SSL_MODE must be "verify" or "require"'
+    );
+  }
+
+  const ssl = { rejectUnauthorized: true };
 
   if (caFile) {
     let ca;
@@ -47,6 +62,7 @@ function createSslConfig() {
 
   return ssl;
 }
+
 
 const pool = new Pool({
   connectionString: databaseUrl,
