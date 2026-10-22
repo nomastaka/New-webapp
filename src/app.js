@@ -91,7 +91,7 @@ function createApp() {
   });
 
   app.get("/manager/login", (_req, res) => res.render("login", { title: "MANAGER AUTHENTICATION", error: null }));
-  app.post("/manager/login", loginLimiter, verifyCsrf, async (req, res, next) => {
+  app.post("/manager/login", loginLimiter, async (req, res, next) => {
     try {
       const schema = z.object({
         username: z.string().min(1).max(100),
@@ -112,7 +112,7 @@ function createApp() {
     } catch (e) { next(e); }
   });
 
-  app.post("/manager/logout", requireAdmin, verifyCsrf, (req, res, next) => {
+  app.post("/manager/logout", requireAdmin, (req, res, next) => {
     req.session.destroy(err => {
       if (err) return next(err);
       res.clearCookie("portal.sid", { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production" });
@@ -142,7 +142,7 @@ function createApp() {
     } catch (e) { next(e); }
   });
 
-  app.post("/manager/keys/:id/revoke", requireAdmin, verifyCsrf, async (req, res, next) => {
+  app.post("/manager/keys/:id/revoke", requireAdmin, async (req, res, next) => {
     try {
       const id = z.coerce.number().int().positive().safeParse(req.params.id);
       if (!id.success) return res.status(400).send("Invalid key id.");
