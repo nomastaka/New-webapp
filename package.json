@@ -5,7 +5,7 @@
   "description": "Secure browser API portal with protected key management",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js",
+    "start": "node --use-system-ca src/server.js",
     "dev": "node --watch src/server.js",
     "check": "node --check src/server.js && node --check src/app.js && node --check src/services/gateway.js"
   },
